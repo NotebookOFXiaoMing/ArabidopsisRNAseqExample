@@ -1,0 +1,4 @@
+gtf file
+download from https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_gff3/TAIR10_GFF3_genes.gff
+convet gff to gtf using gffread
+gffread TAIR10_GFF3_genes.gff -T -o at.gtf
