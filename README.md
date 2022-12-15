@@ -44,3 +44,23 @@ for link in links:
     print(' '.join(cmd))
     subprocess.run(cmd)
 ```
+
+## 下载参考基因组和gff格式注释问津
+
+```
+wget https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_chromosome_files/TAIR10_chr_all.fas.gz
+dtrx TAIR10_chr_all.fas.gz
+wget https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_gff3/TAIR10_GFF3_genes.gff
+gffread 
+```
+
+## 安装软件
+
+我这里直接使用conda进行安装
+
+```
+conda install snakemake
+conda install hisat2
+conda install samtools
+conda install stringtie
+```
