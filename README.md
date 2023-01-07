@@ -243,3 +243,9 @@ fw02.close()
 ```
 python get_reads_from_bam.py -b bam -c chr_name -s 1 -e 100000000 -r1 output_R1.fastq -r2 output_R2.fastq
 ```
+
+## seqkit 根据 id 提取fasta
+
+```
+seqkit faidx input.fasta Chr1 -r
+```
