@@ -379,3 +379,27 @@ linux系统我们是看不见要做的事情对应的按钮的，需要我们记
 windows系统安装软件需要我们去找到对应的安装包，然后用鼠标一路点点点就可以了
 
 linux系统安装软件同样是需要借助命令 linux有很多安装软件的方式 作为生物信息学入门安装软件 我们只需要掌握一个工具conda就可以了，掌握了这个工具基本上90%的生物信息学相关的软件就都可以安装了
+
+## conda 添加北京外国语大学镜像
+
+https://zhuanlan.zhihu.com/p/386843337
+https://mirrors.bfsu.edu.cn/help/anaconda/
+
+```
+vi ~/.condarc
+show_channel_urls: true
+channels:
+  - https://mirrors.bfsu.edu.cn/anaconda/cloud/bioconda/
+  - https://mirrors.bfsu.edu.cn/anaconda/cloud/pytorch/
+  - https://mirrors.bfsu.edu.cn/anaconda/cloud/msys2/
+  - https://mirrors.bfsu.edu.cn/anaconda/cloud/conda-forge
+  - https://mirrors.bfsu.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.bfsu.edu.cn/anaconda/pkgs/free/
+  - defaults
+```
+
+## 用命令行将服务器端的文件下载到本地
+
+```
+scp xiaoming@124.70.145.183:/tmp/dir_Gl_VKU_cp/Gl_VKU_cp.tar.gz D:\Bioinformatics_Intro\
+```
