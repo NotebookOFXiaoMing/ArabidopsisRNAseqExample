@@ -440,6 +440,18 @@ channels:
 - R
 - R package tximport
 
+fastqc 是用来统计测序质量
+
+fastp 是用来对测序数据进行过滤
+
+hisat2是用来比对fastq到参考基因组
+
+samtools是用来做bam sam 文件转化 这里又提到了两个文件格式 后续步骤再来介绍
+
+stringtie 是用来计算表达量
+
+## 下面开始实际操作
+
 ## 用命令行将服务器端的文件下载到本地
 
 ```
