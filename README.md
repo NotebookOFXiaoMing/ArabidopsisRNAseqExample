@@ -265,6 +265,35 @@ grep 'Chr1' input.gff > output.gff
 
 ## 拟南芥有参转录组 第一步：需要准备的文件
 
+通常我们自己做转录组的实验，都是自己准备好样品，然后交给测序公司去测序，如果只是要求测序，并不要求测序公司做相关分析的话，测序公司返回给我们的就是fastq文件，现在通常都是双端测序，所以一个样本对应着是两个fastq文件，假设我们一个对照，一个处理，每个处理测3次重复，所以总共是6个样本，那我们最终会在测序公司手里拿到12个fastq文件
+
+fastq 也是文本文件，文件里的内容按照一定的规律排列，这个规律称为fastq,fastq文件里的内容如下
+
+
+```
+@SRR2037320.R.2/1
+TGAACTTCGAGGAATAGCAGAGACTCCGGAGCTGAAGAGACACTTTGCACGCTGAGAATCTGCAGACAGTCGTCAGGATCCAGAGATAGAATGCGCACAGT
++
+@;@DBBBAHHFCDCAHBDHBEBFHIIGEHCF>CFC0?9DF3?BBDGEHGGFFBGIIHFHEHHFFFFBACCE??=B8=C@?A>ACB?CC>A>:>A@B<B>?#
+@SRR2037320.R.5/1
+CCGAAAGTGTACTGTATGCTGCACTGTGTGAATCACCCCAACGTCCATGTGGGAAGTCATTCCAGCCCTTTGTTCTAGATATGTAGCTCTTTGGACGGTTT
++
+CCCFFFFDHHHHGJIIJJJJJJJJJJJJJIJJJJJJJJJJJJJJJJJJJHJJJJJJJIIJJIIJJJJJHHHHGFF@EDFFEEDEEDEDDDDDDDDCBDDDD
+@SRR2037320.R.7/1
+TTTCCATAACGCAAGAGGATAGATTTAGTATTACAAACTGAATCAATGTGCTTGACGAGGTAGACATGTTTACTAGGCAAGTACAAGAAGAAACATTTGAT
++
+;??D:?DD?+CDD:1+<<+A++<CE??4C?E4*:*?CD@@DDEICDE@4BBA@?(?;B'-'.).=@=C77=CDDD);)7.;;A>;5>>,5;>=A9>A:A##
+```
+
+以四行为一个单位
+
+
+fastq文件通常比较大，所以大部分情况下都是以压缩文件的形式存储
+
+这里介绍的是有参转录组，也就是说自己的目标物种已经有了对应的参考基因组，拿到fastq文件后还需要我们自己到网上下载参考基因组和对应的注释文件，这个参考基因组具体是到哪里下载可以找到参考基因组对应的论文，通常论文里会写他的数据存储到了哪里。
+
+大概率NCBI可以下载到参考基因组，有的物种可能研究的人比较多，自己会有专门的基因组网站，比如拟南芥 西红柿 还有蔷薇科的果实
+
 - 1 参考基因组 fasta 格式
 
 这是一个文本文件，文本文件的意思就是我们用电脑上的记事本软件打开这个文件可以看到里面的内容，fasta 是指文本文件的内容按照指定的格式来排列
@@ -348,22 +377,10 @@ Chr1	TAIR10	three_prime_UTR	6790	7069	.	-	.	Parent=AT1G01020.2
 Chr1	TAIR10	exon	6790	7069	.	-	.	Parent=AT1G01020.2
 ```
 
-- 3 转录组测序产生的fastq文件
 
-```
-@SRR2037320.R.2/1
-TGAACTTCGAGGAATAGCAGAGACTCCGGAGCTGAAGAGACACTTTGCACGCTGAGAATCTGCAGACAGTCGTCAGGATCCAGAGATAGAATGCGCACAGT
-+
-@;@DBBBAHHFCDCAHBDHBEBFHIIGEHCF>CFC0?9DF3?BBDGEHGGFFBGIIHFHEHHFFFFBACCE??=B8=C@?A>ACB?CC>A>:>A@B<B>?#
-@SRR2037320.R.5/1
-CCGAAAGTGTACTGTATGCTGCACTGTGTGAATCACCCCAACGTCCATGTGGGAAGTCATTCCAGCCCTTTGTTCTAGATATGTAGCTCTTTGGACGGTTT
-+
-CCCFFFFDHHHHGJIIJJJJJJJJJJJJJIJJJJJJJJJJJJJJJJJJJHJJJJJJJIIJJIIJJJJJHHHHGFF@EDFFEEDEEDEDDDDDDDDCBDDDD
-@SRR2037320.R.7/1
-TTTCCATAACGCAAGAGGATAGATTTAGTATTACAAACTGAATCAATGTGCTTGACGAGGTAGACATGTTTACTAGGCAAGTACAAGAAGAAACATTTGAT
-+
-;??D:?DD?+CDD:1+<<+A++<CE??4C?E4*:*?CD@@DDEICDE@4BBA@?(?;B'-'.).=@=C77=CDDD);)7.;;A>;5>>,5;>=A9>A:A##
-```
+数据准备好了，接下来开始分析，因为转录组的数据相对还是比较大的，
+
+分析数据需要用到linux操作系统，因为大部分的生物信息相关软件都是linux系统下的命令行工具 ，所以linux操作系统是必须掌握的一个技能
 
 ## 简单的linux系统操作命令
 
@@ -372,13 +389,21 @@ windows系统的功能通常都是可以看见的，需要我们用鼠标去点�
 linux系统我们是看不见要做的事情对应的按钮的，需要我们记住一些命令 用这些命令告诉电脑我们要干什么，同样是新建一个文件夹，在linux操作系统首先要想新建文件夹的命令是什么，mkdir 然后加新建文件夹的名字 `mkdir xiaoming`
 新建一个文本文件 `touch xiaoming.txt`
 
+在文本文件里写内容 vim xiaoming.txt
+
+查看文本文件的内容 less -S xiaoming.txt
+
 当然这些命令很多，我们不太可能所有都记得住，我们需要做的是了解linux系统基本的使用逻辑，然后我们想做某件事不知道用什么命令来实现，我们就直接去搜索引擎里搜索。比如前面已经新建了一个文件夹，那我不想要要这个文件夹了，我要删除他，不知道用什么命令，可以用关键词 `linux delete folder`去搜索
+
+这里只简单介绍几个基本命令，linux操作系统四一个多用，慢慢熟悉的过程
 
 ## linux安装软件
 
 windows系统安装软件需要我们去找到对应的安装包，然后用鼠标一路点点点就可以了
 
 linux系统安装软件同样是需要借助命令 linux有很多安装软件的方式 作为生物信息学入门安装软件 我们只需要掌握一个工具conda就可以了，掌握了这个工具基本上90%的生物信息学相关的软件就都可以安装了
+
+下载anaconda3
 
 ## conda 添加北京外国语大学镜像
 
@@ -397,6 +422,23 @@ channels:
   - https://mirrors.bfsu.edu.cn/anaconda/pkgs/free/
   - defaults
 ```
+
+新建虚拟环境，将软件安装到各自的虚拟环境里
+
+每次需要先启动虚拟环境
+
+安装软件
+
+- fastqc
+- fastp
+- hisat2
+- samtools
+- stringtie
+
+以上是在linux系统下完成，接下来用到R语言就可以在我们自己电脑上进行了
+
+- R
+- R package tximport
 
 ## 用命令行将服务器端的文件下载到本地
 
