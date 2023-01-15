@@ -452,6 +452,12 @@ stringtie 是用来计算表达量
 
 ## 下面开始实际操作
 
+示例数据下载，示例数据我上传到了百度网盘 链接：https://pan.baidu.com/s/1qikxdcPcog1jAgjrRdFrEg 
+
+提取码可以自公众号 小明的数据分析笔记本 后台回复 `Arabidopsis_RNAseq` 获取 (精确匹配，开头结尾都没有空格 严格大小写)
+
+
+
 ## 用命令行将服务器端的文件下载到本地
 
 ```
