@@ -456,7 +456,96 @@ stringtie 是用来计算表达量
 
 提取码可以自公众号 小明的数据分析笔记本 后台回复 `Arabidopsis_RNAseq` 获取 (精确匹配，开头结尾都没有空格 严格大小写)
 
+我的目录结构
 
+https://github.com/NotebookOFXiaoMing/ArabidopsisRNAseqExample/blob/main/img/001.png
+
+```
+cd Arabidopsis_RNAseq/
+```
+
+总共有四个样本，其中一个对照，一个处理，对照和处理分别是2个重复
+
+我们每次处理一个样本，四个样本相当于把整个转录组数据的处理流程重复4次
+
+首先安装fastqc
+
+```
+conda install fastqc
+mkdir 00.fastqc.report
+fastqc raw.fastq/SRR4420293_R1.fastq.gz -o 00.fastqc.report/
+fastqc raw.fastq/SRR4420293_R2.fastq.gz -o 00.fastqc.report/
+```
+
+一个样本的双端测序数据需要运行两次fastqc
+
+fastqc会生成一个html文件 和 一个zip的压缩文件
+
+https://github.com/NotebookOFXiaoMing/ArabidopsisRNAseqExample/blob/main/img/002.png
+
+我们把html文件下载到本地，查看对测序数据质量的一些统计指标 可以参考一下这个链接 
+
+https://www.jianshu.com/p/c81c7110eed4 
+
+https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html
+
+接下来使用fastp软件采用默认参数对数据进行过滤
+
+```
+conda install fastp
+mkdir 01.fastp.report
+mkdir 01.clean.fastq
+fastp -i raw.fastq/SRR4420293_R1.fastq.gz -I raw.fastq/SRR4420293_R2.fastq.gz -o 01.clean.fastq/SRR4420293_clean_R1.fq -O 01.clean.fastq/SRR4420293_clean_R2.fq -h 01.fastp.report/SRR4420293.html -j 01.fastp.report/SRR4420293.json
+```
+
+这里可以使用fastqc对过滤后的数据进行一个质量统计
+
+接下来使用hisat2软件将测序数据比对到参考基因组
+
+安装hisat2
+
+```
+conda install hisat2
+```
+
+第一步是对参考基因组进行索引 ，这个索引具体是什么意思我也不太明白，简单理解就是对参考基因组进行一定的处理，使得将测序数据比对到参考基因组的时候会更快
+
+这一步会比较耗时，如果参考基因组比较大的话，对电脑的配置要求也比较高
+
+```
+mkdir reference/index
+hisat2-build reference/genome/at_chr1.fa reference/index/at_chr1
+```
+
+将测序数据比对到参考基因组生成sam文件
+
+```
+mkdir 02.output.sam
+hisat2 -x reference/index/at_chr1 -p 2 -1 01.clean.fastq/SRR4420293_clean_R1.fq -2 01.clean.fastq/SRR4420293_clean_R2.fq -S 02.output.sam/SRR4420293.sam
+```
+
+使用samtools将sam文件转换为bam文件 bam文件是二进制文件，可以节省存储空间
+
+```
+mkdir 03.output.bam
+conda install samtools
+samtools view -@ 2 02.output.sam/SRR4420293.sam -b -o 03.output.bam/SRR4420293.bam
+samtools sort -@ 2 -O bam -o 04.sorted.bam/SRR4420293.sorted.bam 03.output.bam/SRR4420293.bam
+samtools index 04.sorted.bam/SRR4420293.sorted.bam
+```
+
+接下来是stringtie计算表达量
+
+```
+mkdir 05.stringtie.output
+stringtie -e -B -p 2 -G reference/gtf/at_chr1.gff -o 05.stringtie.output/SRR4420293/SRR4420293_chr1.gtf 04.sorted.bam/SRR4420293.sorted.bam -A 05.stringtie.output/SRR4420293/SRR4420293_gene.abundance
+```
+
+这样一个样本 在linux系统下就处理好了，接下来是重复这个流程 完成剩下3个样本的数据处理
+
+```
+
+```
 
 ## 用命令行将服务器端的文件下载到本地
 
