@@ -14,8 +14,11 @@ conda install bioconductor-tximport
 
 ### 需要准备的数据
 
-00.raw.fq文件夹下存储的是原始的转录组测序数据 
+00.raw.fq文件夹下存储的是原始的转录组测序数据  我的fastq文件名是 SRR4420293_R1.fastq.gz，如果你的数据 和这个不一致，需要修改histat2_samtools_stringtie_rnaseq.smk
+
 reference/genome/ref.fa 是参考基因组，（把你的参考基因组改成ref.fa这个名字）
+
+
 reference/gtf/ref.gff 是参考价基因组的注释文件 （把你的注释文件也改成ref.gff这个名字，gtf和gff都可以，统一改成ref.gff）
 
 软件安装好，数据贮备好，运行
